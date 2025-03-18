@@ -4,6 +4,10 @@
 # - Criar funcao para verficar se o arquivo de credenciais existe 
 # - Criar funcao para verificar se o arquivo de token existe
 # - Criar funcao para verificar se o arquivo de log existe
+# - Criar md5sum para o script shell
+# - Criar md5sum para o script python
+# - Criar funcao para verificar se o script shell foi alterado
+# - Criar funcao para verificar se o script python foi alterado
 
 # - Em caso de falha na execucao, encerrará a execução e sairá do script
 set -e
