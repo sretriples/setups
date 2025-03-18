@@ -5,15 +5,19 @@
 # - Criar funcao para verificar se o arquivo de token existe
 # - Criar funcao para verificar se o arquivo de log existe
 
+# - Em caso de falha na execucao, encerrará a execução e sairá do script
 set -e
 
+# - Definir variáveis para o sistema operacional e arquitetura
 os=$(uname | tr '[:upper:]' '[:lower:]')
 arch=$(uname -m | tr '[:upper:]' '[:lower:]' | sed -e s/x86_64/amd64/)
 
+# - Se a arquitetura for aarch64, substitua por arm64
 if [ "$arch" = "aarch64" ]; then
   arch="arm64"
 fi
 
+# - Função para instalar pacotes no sistema
 install_package() {
   PACKAGE=$1
   if [ -x "$(command -v apt)" ]; then
@@ -29,7 +33,9 @@ install_package() {
   fi
 }
 
+# - Instala o pacote python3 em sistemas sem o comando 'apt' (caso do Ubuntu/Debian)
 if ! command -v apt > /dev/null 2>&1; then
+  # - Para sistemas que usam 'dnf' ou 'yum' (Fedora, CentOS, etc), instala o python3
   if command -v dnf > /dev/null 2>&1; then
     install_package "python3"
   elif command -v yum > /dev/null 2>&1; then
@@ -37,79 +43,93 @@ if ! command -v apt > /dev/null 2>&1; then
   elif command -v zypper > /dev/null 2>&1; then
     install_package "python3"
   else
+    # - Se não for possível instalar o python3, exibe uma mensagem de erro e sai do script
     exit 1
   fi
 else
+  # - Para sistemas que usam 'apt' (Ubuntu, Debian, etc), instala o python3 
   install_package "python3" && install_package "python3.12-venv"
 fi
 
+# - Se o diretório 'backup-drive' não existir, cria um ambiente virtual Python nele
 if [ ! -d "$HOME/backup-drive" ]; then
   python3 -m venv "$HOME/backup-drive"
 fi
 
+# - Ativa o ambiente virtual Python
 . "$HOME/backup-drive/bin/activate"
 
+# - Atualiza o pip dentro do ambiente virtual
 pip install --upgrade pip
 
+# - Se o comando 'pip' não estiver disponível, tenta garantir que o 'pip' seja instalado
 if ! command -v pip > /dev/null 2>&1; then
   python -m ensurepip --upgrade
 fi
 
+# - Se o comando 'aws' não estiver disponível, instala o AWS CLI
 if ! command -v aws > /dev/null 2>&1; then
   install_package "unzip"
+  # - Verifica se o sistema é Linux e instala o AWS CLI com base na arquitetura
   if [ "$os" = "linux" ]; then
     if [ "$arch" = "amd64" ]; then
       curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
     elif [ "$arch" = "arm64" ]; then
       curl "https://awscli.amazonaws.com/awscli-exe-linux-arm64.zip" -o "awscliv2.zip"
     else
+      # - Se a arquitetura não for suportada, exibe mensagem de erro e sai do script
       echo "Arquitetura não suportada para o AWS CLI."
       exit 1
     fi
 
+    # - Verifica se o arquivo foi baixado corretamente
     if [ ! -f awscliv2.zip ]; then
       echo "Erro: O arquivo awscliv2.zip não foi baixado corretamente."
       exit 1
     fi
 
+    # - Verifica se o arquivo AWS CLI está corrompido
     unzip -t awscliv2.zip || { echo "Erro: Arquivo AWS CLI corrompido."; exit 1; }
 
+    # - Descompacta e instala o AWS CLI
     unzip awscliv2.zip
     sudo ./aws/install
     rm -rf awscliv2.zip aws
   else
+    # - Se o sistema não for Linux, exibe mensagem de erro e sai do script
     echo "Sistema não suportado para a instalação do AWS CLI. Instale manualmente."
     exit 1
   fi
 fi
 
-
+# - Se o arquivo 'requirements.txt' existir no diretório 'backup-drive', instala as dependências
 if [ -f "$HOME/backup-drive/requirements.txt" ]; then
 
   pip install -r "$HOME/backup-drive/requirements.txt"
 
 else
-
+  # - Se o arquivo 'requirements.txt' não existir, instala as dependências manualmente
   pip install google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client boto3
 
 fi
 
-
+# - Se o comando 'git' não estiver disponível, instala o git
 if ! command -v git > /dev/null 2>&1; then
  
   install_package "git-core"
+
 fi
 
-
+# - Se o comando 'crontab' não estiver disponível, tenta instalar o serviço de cron adequado
 if ! command -v crontab > /dev/null 2>&1; then
-
+  # - Verifica o sistema operacional e instala o serviço de cron adequado
   if [ -f /etc/os-release ] && grep -qi "amazon linux" /etc/os-release; then
 
     sudo yum install -y cronie
 
   elif [ -f /etc/os-release ] && grep -qi "suse" /etc/os-release; then
-
-    sudo zypper install -y cron  # No SUSE, o pacote correto é 'cron', não 'cronie'
+    # - Verifica se o sistema é openSUSE / SUSE Entreprise Linux e instala o serviço de cron adequado
+    sudo zypper install -y cron  
 
   elif [ -x "$(command -v dnf)" ]; then
 
@@ -118,9 +138,11 @@ if ! command -v crontab > /dev/null 2>&1; then
   else
 
     install_package "cron"
+  
   fi
 fi
 
+# - Se o serviço de cron estiver disponível, habilita e inicia o serviço
 if [ -x "$(command -v systemctl)" ]; then
 
   if systemctl list-units --type=service | grep -qi "crond.service"; then
@@ -139,7 +161,9 @@ if [ -x "$(command -v systemctl)" ]; then
     sudo systemctl start cronie
 
   else
+    # - Se o serviço de cron não for encontrado, exibe uma mensagem de erro
     echo "Nenhum serviço de cron encontrado. Verifique a instalação."
+  
   fi
 fi
 
