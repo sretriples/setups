@@ -69,7 +69,7 @@ run_cmd "sudo apt install -y tanzu-cli=1.3.0"
 log "🔌 Instalando plugins do Tanzu CLI..."
 export TANZU_CLI_CEIP_OPT_IN_PROMPT_ANSWER=no
 run_cmd "tanzu config eula accept"
-run_cmd "tanzu plugin install --group vmware-tkg/default:v2.5.3"
+run_cmd "tanzu plugin install --group vmware-tkg/default:v2.5.2"
 run_cmd "tanzu plugin install cluster --target k8s"
 run_cmd "tanzu plugin install secret --target k8s"
 
