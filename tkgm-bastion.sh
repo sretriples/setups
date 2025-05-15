@@ -55,9 +55,6 @@ run_cmd "sudo systemctl daemon-reload"
 run_cmd "sudo systemctl restart docker"
 run_cmd "sudo systemctl enable docker"
 
-log "📦 Instalando kubectl..."
-run_cmd "curl -LO https://dl.k8s.io/release/\$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-run_cmd "chmod +x kubectl && sudo mv kubectl /usr/local/bin/"
 
 log "🌐 Instalando Tanzu CLI..."
 run_cmd "sudo mkdir -p /etc/apt/keyrings"
