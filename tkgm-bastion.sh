@@ -190,6 +190,34 @@ for tool in "${!tools[@]}"; do
     log "✅ ${tool} instalado com sucesso."
 done
 
+log "📥 Instalando kubectl..."
+
+KUBECTL_VERSION="v1.30.9+vmware.3"
+KUBECTL_URL="https://github.com/sretriples/setups/raw/main/pkgs/kubectl.gz"
+KUBECTL_TMP="/tmp/kubectl.gz"
+KUBECTL_BIN="/tmp/kubectl"
+KUBECTL_DST="/usr/local/bin/kubectl"
+
+log "⬇️ Baixando kubectl de: $KUBECTL_URL"
+run_cmd "curl -L -o ${KUBECTL_TMP} ${KUBECTL_URL}"
+
+log "📦 Descompactando kubectl..."
+run_cmd "gunzip -f ${KUBECTL_TMP}"
+
+if [ ! -f "${KUBECTL_BIN}" ]; then
+    log "❌ Arquivo kubectl não encontrado após descompactação."
+    exit 1
+fi
+
+log "🚚 Movendo kubectl para ${KUBECTL_DST}"
+run_cmd "sudo mv ${KUBECTL_BIN} ${KUBECTL_DST}"
+
+log "🔐 Ajustando permissões do kubectl"
+run_cmd "sudo chmod +x ${KUBECTL_DST}"
+
+log "✅ kubectl instalado com sucesso"
+
+
 log "✅ Instalação concluída. Verifique o log completo em: $LOG_FILE"
 log " "
 log " "
