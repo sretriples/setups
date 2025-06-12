@@ -40,7 +40,7 @@ ARCH=$(uname -m)
 log "🔍 Distribuição detectada: $DISTRO / Arquitetura: $ARCH"
 
 log "🌐 Verificando conectividade com a internet..."
-curl -sk --head https://www.google.com | head -n 1 | grep "200" > /dev/null
+curl -s --head https://www.google.com | head -n 1 | grep "200" > /dev/null
 if [ $? -ne 0 ]; then
     log "❌ Sem conexão com a internet. Interrompendo instalação."
     exit 1
