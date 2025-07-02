@@ -72,7 +72,7 @@ install_docker_ubuntu() {
 
 install_docker_rhel() {
     run_cmd "sudo dnf -y install dnf-plugins-core"
-    run_cmd "sudo dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo"
+    run_cmd "sudo dnf config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo"
     run_cmd "sudo dnf install -y docker-ce docker-ce-cli containerd.io"
 }
 
@@ -129,7 +129,7 @@ run_cmd "sudo systemctl enable docker"
 log "🔌 Instalando plugins do Tanzu CLI..."
 export TANZU_CLI_CEIP_OPT_IN_PROMPT_ANSWER=no
 run_cmd "tanzu config eula accept"
-run_cmd "tanzu plugin install --group vmware-tkg/default:v2.5.3"
+run_cmd "tanzu plugin install --group vmware-tkg/default:v2.5.4"
 run_cmd "tanzu plugin install cluster --target k8s"
 run_cmd "tanzu plugin install secret --target k8s"
 
