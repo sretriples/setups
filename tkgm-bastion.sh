@@ -127,6 +127,7 @@ run_cmd "sudo systemctl restart docker"
 run_cmd "sudo systemctl enable docker"
 
 log "🔌 Instalando plugins do Tanzu CLI..."
+export TANZU_CLI_EULA_PROMPT_ANSWER=yes
 export TANZU_CLI_CEIP_OPT_IN_PROMPT_ANSWER=no
 run_cmd "tanzu config eula accept"
 run_cmd "tanzu plugin install --group vmware-tkg/default:v2.5.4"
