@@ -96,7 +96,7 @@ install_tanzu_rhel() {
     run_cmd "curl -L -o $RPM_TMP_FILE $TANZU_RPM_URL"
 
     log "📦 Instalando Tanzu CLI via rpm..."
-    run_cmd "sudo rpm -ivh $RPM_TMP_FILE"
+    run_cmd "sudo rpm -ivh $RPM_TMP_FILE --replacefiles"
 }
 
 # Instalação base por distribuição
@@ -127,9 +127,9 @@ run_cmd "sudo systemctl restart docker"
 run_cmd "sudo systemctl enable docker"
 
 log "🔌 Instalando plugins do Tanzu CLI..."
-run_cmd "tanzu config eula accept"
-run_cmd "TANZU_CLI_NO_INIT=true TANZU_CLI_EULA_PROMPT_ANSWER=yes TANZU_CLI_CEIP_OPT_IN_PROMPT_ANSWER=no tanzu plugin install --group vmware-tkg/default:v2.5.4"
-run_cmd "tanzu plugin install --group vmware-tkg/default:v2.5.4"
+#run_cmd "tanzu config eula accept"
+#run_cmd "TANZU_CLI_NO_INIT=true TANZU_CLI_EULA_PROMPT_ANSWER=yes TANZU_CLI_CEIP_OPT_IN_PROMPT_ANSWER=no tanzu plugin install --group vmware-tkg/default:v2.5.4"
+#run_cmd "tanzu plugin install --group vmware-tkg/default:v2.5.4"
 run_cmd "tanzu plugin install cluster --target k8s"
 run_cmd "tanzu plugin install secret --target k8s"
 
