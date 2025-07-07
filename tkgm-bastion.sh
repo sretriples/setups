@@ -96,7 +96,7 @@ install_tanzu_rhel() {
     run_cmd "curl -L -o $RPM_TMP_FILE $TANZU_RPM_URL"
 
     log "📦 Instalando Tanzu CLI via rpm..."
-    run_cmd "sudo rpm -ivh $RPM_TMP_FILE --replacefiles"
+    run_cmd "sudo rpm -ivh $RPM_TMP_FILE"
 }
 
 # Instalação base por distribuição
