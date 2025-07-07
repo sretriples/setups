@@ -70,11 +70,11 @@ install_docker_ubuntu() {
     run_cmd "sudo apt install -y docker-ce docker-ce-cli containerd.io"
 }
 
-install_docker_rhel() {
-    run_cmd "sudo dnf -y install dnf-plugins-core"
-    run_cmd "sudo dnf config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo"
-    run_cmd "sudo dnf install -y docker-ce docker-ce-cli containerd.io"
-}
+# install_docker_rhel() {
+#     run_cmd "sudo dnf -y install dnf-plugins-core"
+#     run_cmd "sudo dnf config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo"
+#     run_cmd "sudo dnf install -y docker-ce docker-ce-cli containerd.io"
+# }
 
 install_tanzu_ubuntu() {
     run_cmd "sudo mkdir -p /etc/apt/keyrings"
@@ -84,110 +84,137 @@ install_tanzu_ubuntu() {
     run_cmd "sudo apt install -y tanzu-cli=1.5.3"
 }
  
-install_tanzu_rhel() {
-    if [[ "$ARCH" == "aarch64" ]]; then
-        TANZU_RPM_URL="https://storage.googleapis.com/tanzu-cli-installer-packages/rpm/tanzu-cli/tanzu-cli-1.5.3-1.aarch64.rpm"
-    else
-        TANZU_RPM_URL="https://storage.googleapis.com/tanzu-cli-installer-packages/rpm/tanzu-cli/tanzu-cli-1.5.3-1.x86_64.rpm"
-    fi
+# install_tanzu_rhel() {
+#     if [[ "$ARCH" == "aarch64" ]]; then
+#         TANZU_RPM_URL="https://storage.googleapis.com/tanzu-cli-installer-packages/rpm/tanzu-cli/tanzu-cli-1.5.3-1.aarch64.rpm"
+#     else
+#         TANZU_RPM_URL="https://storage.googleapis.com/tanzu-cli-installer-packages/rpm/tanzu-cli/tanzu-cli-1.5.3-1.x86_64.rpm"
+#     fi
 
-    RPM_TMP_FILE="/tmp/tanzu-cli-1.5.3.rpm"
-    log "⬇️ Baixando Tanzu CLI RPM..."
-    run_cmd "curl -L -o $RPM_TMP_FILE $TANZU_RPM_URL"
+#     RPM_TMP_FILE="/tmp/tanzu-cli-1.5.3.rpm"
+#     log "⬇️ Baixando Tanzu CLI RPM..."
+#     run_cmd "curl -L -o $RPM_TMP_FILE $TANZU_RPM_URL"
 
-    log "📦 Instalando Tanzu CLI via rpm..."
-    run_cmd "sudo rpm -ivh $RPM_TMP_FILE"
-}
+#     log "📦 Instalando Tanzu CLI via rpm..."
+#     run_cmd "sudo rpm -ivh $RPM_TMP_FILE"
+# }
 
 # Instalação base por distribuição
-case "$DISTRO" in
-    ubuntu)
-        install_dependencies_ubuntu
-        install_docker_ubuntu
-        install_tanzu_ubuntu
-        ;;
-    rhel|centos|fedora)
-        install_dependencies_rhel
-        install_docker_rhel
-        install_tanzu_rhel
-        ;;
-    *)
-        log "❌ Distribuição não suportada automaticamente: $DISTRO"
-        exit 1
-        ;;
-esac
+# case "$DISTRO" in
+#     ubuntu)
+#         install_dependencies_ubuntu
+#         install_docker_ubuntu
+#         install_tanzu_ubuntu
+#         ;;
+#     rhel|centos|fedora)
+#         install_dependencies_rhel
+#         install_docker_rhel
+#         install_tanzu_rhel
+#         ;;
+#     *)
+#         log "❌ Distribuição não suportada automaticamente: $DISTRO"
+#         exit 1
+#         ;;
+# esac
 
-run_cmd "sudo usermod -aG docker \$USER"
+# run_cmd "sudo usermod -aG docker \$USER"
 
 
-log "⚙️ Configurando Docker..."
-run_cmd "echo '{\"exec-opts\": [\"native.cgroupdriver=systemd\"]}' | sudo tee /etc/docker/daemon.json > /dev/null"
-run_cmd "sudo systemctl daemon-reload"
-run_cmd "sudo systemctl restart docker"
-run_cmd "sudo systemctl enable docker"
+# log "⚙️ Configurando Docker..."
+# run_cmd "echo '{\"exec-opts\": [\"native.cgroupdriver=systemd\"]}' | sudo tee /etc/docker/daemon.json > /dev/null"
+# run_cmd "sudo systemctl daemon-reload"
+# run_cmd "sudo systemctl restart docker"
+# run_cmd "sudo systemctl enable docker"
 
-log "🔌 Instalando plugins do Tanzu CLI..."
-#run_cmd "tanzu config eula accept"
-#run_cmd "TANZU_CLI_NO_INIT=true TANZU_CLI_EULA_PROMPT_ANSWER=yes TANZU_CLI_CEIP_OPT_IN_PROMPT_ANSWER=no tanzu plugin install --group vmware-tkg/default:v2.5.4"
-#run_cmd "tanzu plugin install --group vmware-tkg/default:v2.5.4"
-run_cmd "tanzu plugin install cluster --target k8s"
-run_cmd "tanzu plugin install secret --target k8s"
+# log "🔌 Instalando plugins do Tanzu CLI..."
+# #run_cmd "tanzu config eula accept"
+# #run_cmd "TANZU_CLI_NO_INIT=true TANZU_CLI_EULA_PROMPT_ANSWER=yes TANZU_CLI_CEIP_OPT_IN_PROMPT_ANSWER=no tanzu plugin install --group vmware-tkg/default:v2.5.4"
+# #run_cmd "tanzu plugin install --group vmware-tkg/default:v2.5.4"
+# run_cmd "tanzu plugin install cluster --target k8s"
+# run_cmd "tanzu plugin install secret --target k8s"
 
-log "⚓ Instalando Helm..."
-run_cmd "curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash"
+# log "⚓ Instalando Helm..."
+# run_cmd "curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash"
 
-log "📦 Instalando ferramentas Carvel..."
+# log "📦 Instalando ferramentas Carvel..."
+# dst_dir="/usr/local/bin"
+# dl_bin="curl -s -L"
+# binary_type="linux-amd64"
+
+# # Detectar comando de verificação de hash disponível
+# if command -v shasum &>/dev/null; then
+#     hash_cmd="shasum -a 256"
+# elif command -v sha256sum &>/dev/null; then
+#     hash_cmd="sha256sum"
+# elif command -v openssl &>/dev/null; then
+#     hash_cmd="openssl dgst -sha256"
+# else
+#     echo "❌ Nenhuma ferramenta de verificação SHA256 encontrada (shasum, sha256sum ou openssl)."
+#     exit 1
+# fi
+
+# declare -A tools=(
+#   [ytt]="https://github.com/sretriples/setups/raw/main/pkgs/ytt 8e4696f024e6d75a6f12c71914d0d350323e2602489da32ab019e1f2bf872a4b"
+#   [imgpkg]="https://github.com/sretriples/setups/raw/main/pkgs/imgpkg 66ef9022b01331b6b0e6d38c85e9a9537d77bf005f2ca7d5c25805c14884b258"
+#   [kbld]="https://github.com/sretriples/setups/raw/main/pkgs/kbld 8565e5c9864696e705acb6ff9b5029c1464defda23fc922c1a29727aedb1b8ff"
+#   [kapp]="https://github.com/sretriples/setups/raw/main/pkgs/kapp 040af12be6c0c13c0b0f1a9e4d75fcf9265c27df1b35192edd4a6545cd372f2c"
+#   [vendir]="https://github.com/sretriples/setups/raw/main/pkgs/vendir d6cae2f1a9236dae1a7fa89e165cb78d08c4c1ae57b0611072a7dd4187775300"
+# )
+
+
+# for tool in "${!tools[@]}"; do
+#     url_checksum=(${tools[$tool]})
+#     url=${url_checksum[0]}
+#     checksum=${url_checksum[1]}
+
+#     log "⬇️ Instalando ${tool}..."
+#     $dl_bin "$url" > "/tmp/${tool}"
+
+#     if [[ $hash_cmd == openssl* ]]; then
+#         file_hash=$($hash_cmd /tmp/${tool} | awk '{print $2}')
+#         if [[ "$file_hash" != "$checksum" ]]; then
+#             log "❌ Falha na verificação de integridade do ${tool}"
+#             continue
+#         fi
+#     else
+#         echo "${checksum}  /tmp/${tool}" | $hash_cmd -c - >>"$LOG_FILE" 2>&1
+#         if [ $? -ne 0 ]; then
+#             log "❌ Falha na verificação de integridade do ${tool}"
+#             continue
+#         fi
+#     fi
+
+#     run_cmd "sudo mv /tmp/${tool} ${dst_dir}/${tool}"
+#     run_cmd "sudo chmod +x ${dst_dir}/${tool}"
+#     log "✅ ${tool} instalado com sucesso."
+# done
+
 dst_dir="/usr/local/bin"
 dl_bin="curl -s -L"
 binary_type="linux-amd64"
 
-# Detectar comando de verificação de hash disponível
-if command -v shasum &>/dev/null; then
-    hash_cmd="shasum -a 256"
-elif command -v sha256sum &>/dev/null; then
-    hash_cmd="sha256sum"
-elif command -v openssl &>/dev/null; then
-    hash_cmd="openssl dgst -sha256"
-else
-    echo "❌ Nenhuma ferramenta de verificação SHA256 encontrada (shasum, sha256sum ou openssl)."
-    exit 1
-fi
-
+# Lista de ferramentas e URLs (sem checksums)
 declare -A tools=(
-  [ytt]="https://github.com/sretriples/setups/raw/main/pkgs/ytt 8e4696f024e6d75a6f12c71914d0d350323e2602489da32ab019e1f2bf872a4b"
-  [imgpkg]="https://github.com/sretriples/setups/raw/main/pkgs/imgpkg 66ef9022b01331b6b0e6d38c85e9a9537d77bf005f2ca7d5c25805c14884b258"
-  [kbld]="https://github.com/sretriples/setups/raw/main/pkgs/kbld 8565e5c9864696e705acb6ff9b5029c1464defda23fc922c1a29727aedb1b8ff"
-  [kapp]="https://github.com/sretriples/setups/raw/main/pkgs/kapp 040af12be6c0c13c0b0f1a9e4d75fcf9265c27df1b35192edd4a6545cd372f2c"
-  [vendir]="https://github.com/sretriples/setups/raw/main/pkgs/vendir d6cae2f1a9236dae1a7fa89e165cb78d08c4c1ae57b0611072a7dd4187775300"
+  [ytt]="https://github.com/sretriples/setups/raw/main/pkgs/ytt"
+  [imgpkg]="https://github.com/sretriples/setups/raw/main/pkgs/imgpkg"
+  [kbld]="https://github.com/sretriples/setups/raw/main/pkgs/kbld"
+  [kapp]="https://github.com/sretriples/setups/raw/main/pkgs/kapp"
+  [vendir]="https://github.com/sretriples/setups/raw/main/pkgs/vendir"
 )
 
-
 for tool in "${!tools[@]}"; do
-    url_checksum=(${tools[$tool]})
-    url=${url_checksum[0]}
-    checksum=${url_checksum[1]}
+    url="${tools[$tool]}"
 
     log "⬇️ Instalando ${tool}..."
     $dl_bin "$url" > "/tmp/${tool}"
 
-    if [[ $hash_cmd == openssl* ]]; then
-        file_hash=$($hash_cmd /tmp/${tool} | awk '{print $2}')
-        if [[ "$file_hash" != "$checksum" ]]; then
-            log "❌ Falha na verificação de integridade do ${tool}"
-            continue
-        fi
-    else
-        echo "${checksum}  /tmp/${tool}" | $hash_cmd -c - >>"$LOG_FILE" 2>&1
-        if [ $? -ne 0 ]; then
-            log "❌ Falha na verificação de integridade do ${tool}"
-            continue
-        fi
-    fi
-
+    # Instalação
     run_cmd "sudo mv /tmp/${tool} ${dst_dir}/${tool}"
     run_cmd "sudo chmod +x ${dst_dir}/${tool}"
     log "✅ ${tool} instalado com sucesso."
 done
+
+
 
 log "📥 Instalando kubectl..."
 
