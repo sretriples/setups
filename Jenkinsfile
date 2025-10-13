@@ -1,11 +1,6 @@
 pipeline {
-    agent {
-        docker {
-            // uso de imagem mais compatível (não “alpine” puro) pode ajudar
-            image 'node:18'  
-            args '-u root:root'
-        }
-    }
+    agent any
+
     stages {
         stage('Checkout') {
             steps {
@@ -24,8 +19,8 @@ pipeline {
                 snykSecurity(
                     organisation: 'delsoncjunior',
                     projectName: 'Bananada',
-                    snykInstallation: 'snyk',   // nome da instalação Snyk configurada no Jenkins
-                    snykTokenId: 'snyk',        // ID da credencial “Snyk API Token”
+                    snykInstallation: 'snyk',
+                    snykTokenId: 'snyk',
                     targetFile: 'package.json',
                     severity: 'medium'
                 )
@@ -34,7 +29,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                echo "Build concluído (exemplo)"
+                echo "Build concluído com sucesso!"
             }
         }
     }
