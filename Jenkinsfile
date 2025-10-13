@@ -21,7 +21,8 @@ pipeline {
                 snykSecurity(
                     organisation: 'delsoncjunior',
                     projectName: 'Bananada',
-                    snykInstallation: 'snyk',    // Nome configurado em "Global Tool Configuration"
+                    snykInstallation: 'snyk',      // Nome da instalação no Jenkins (Global Tool Configuration)
+                    snykTokenId: 'snyk',           // ID da credencial (você já configurou como 'snyk')
                     targetFile: 'package.json',
                     severity: 'medium'
                 )
@@ -29,7 +30,7 @@ pipeline {
         }
         stage('Build') {
             steps {
-                echo 'Build concluído'
+                echo 'Build finalizado com sucesso!'
             }
         }
     }
