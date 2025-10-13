@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Preparation') {
             steps {
-                git 'https://github.com/sretriples/setups.git'
+                git branch: 'main', url: 'https://github.com/sretriples/setups.git'
             }
         }
         stage('Install dependencies') {
