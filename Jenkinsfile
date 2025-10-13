@@ -5,6 +5,9 @@ pipeline {
             args '-u root:root'
         }
     }
+    environment {
+        SNYK_TOKEN = credentials('snyk') // usa o ID da credencial que você configurou
+    }
     stages {
         stage('Preparation') {
             steps {
@@ -14,18 +17,12 @@ pipeline {
         stage('Install dependencies') {
             steps {
                 sh 'npm install'
+                sh 'npm install -g snyk'
             }
         }
         stage('Snyk Scan') {
             steps {
-                snykSecurity(
-                    organisation: 'delsoncjunior',
-                    projectName: 'Bananada',
-                    snykInstallation: 'snyk',      // Nome da instalação no Jenkins (Global Tool Configuration)
-                    snykTokenId: 'snyk',           // ID da credencial (você já configurou como 'snyk')
-                    targetFile: 'package.json',
-                    severity: 'medium'
-                )
+                sh 'snyk test --severity-threshold=medium --file=package.json --org=delsoncjunior --project-name=Bananada'
             }
         }
         stage('Build') {
