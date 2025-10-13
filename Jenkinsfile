@@ -5,29 +5,34 @@ pipeline {
             args '-u root:root'
         }
     }
+
     environment {
-        SNYK_TOKEN = credentials('snyk') // usa o ID da credencial que você configurou
+        SNYK_TOKEN = credentials('snyk') // ID da sua credencial do tipo "Secret text"
     }
+
     stages {
-        stage('Preparation') {
+        stage('Checkout') {
             steps {
                 git branch: 'main', url: 'https://github.com/sretriples/setups.git'
             }
         }
+
         stage('Install dependencies') {
             steps {
                 sh 'npm install'
-                sh 'npm install -g snyk'
+                sh 'npm install -g snyk' // instala Snyk CLI
             }
         }
+
         stage('Snyk Scan') {
             steps {
-                sh 'snyk test --severity-threshold=medium --file=package.json --org=delsoncjunior --project-name=Bananada'
+                sh 'snyk test --severity-threshold=medium'
             }
         }
+
         stage('Build') {
             steps {
-                echo 'Build finalizado com sucesso!'
+                echo 'Build stage running...'
             }
         }
     }
