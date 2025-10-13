@@ -1,45 +1,40 @@
 pipeline {
     agent {
         docker {
-            image 'node:18-alpine'    // Container leve com Node.js
-            args '-u root:root'       // Executar como root para evitar problemas de permissão
+            // uso de imagem mais compatível (não “alpine” puro) pode ajudar
+            image 'node:18'  
+            args '-u root:root'
         }
     }
-    environment {
-        // SNYK_TOKEN é a credencial do Jenkins que armazena seu token do Snyk (tipo String Credential)
-        SNYK_TOKEN = credentials('snyk')  
-    }
     stages {
-        stage('Preparation') {
+        stage('Checkout') {
             steps {
-                // Clona o repositório, ajusta o branch se necessário
                 git branch: 'main', url: 'https://github.com/sretriples/setups.git'
             }
         }
+
         stage('Install dependencies') {
             steps {
-                // Instala as dependências Node.js do projeto
                 sh 'npm install'
             }
         }
+
         stage('Snyk Scan') {
             steps {
-                // Executa o scanner do plugin Snyk integrado
                 snykSecurity(
                     organisation: 'delsoncjunior',
                     projectName: 'Bananada',
-                    snykInstallation: 'snyk',
-                    snykTokenId: 'snyk',
+                    snykInstallation: 'snyk',   // nome da instalação Snyk configurada no Jenkins
+                    snykTokenId: 'snyk',        // ID da credencial “Snyk API Token”
                     targetFile: 'package.json',
                     severity: 'medium'
                 )
             }
         }
+
         stage('Build') {
             steps {
-                // Exemplo de build, substitua pelo seu processo real
-                echo 'Executando build do projeto Node.js...'
-                // sh 'npm run build'  // se tiver script build
+                echo "Build concluído (exemplo)"
             }
         }
     }
