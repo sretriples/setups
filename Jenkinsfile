@@ -1,35 +1,33 @@
 pipeline {
     agent any
-
+    tools {
+        maven 'MAVEN'
+    }
     stages {
-        stage('Checkout') {
+        stage('Build Maven') {
             steps {
-                git branch: 'main', url: 'https://github.com/sretriples/setups.git'
+                checkout scm
+                sh 'mvn install'
             }
         }
-
-        stage('Install dependencies') {
+        stage('Build Docker Image') {
             steps {
-                sh 'npm install'
+                sh 'docker build -t sretriples/setups .'
             }
         }
-
-        stage('Snyk Scan') {
+        stage('Scan') {
             steps {
-                snykSecurity(
-                    organisation: 'delsoncjunior',
-                    projectName: 'Bananada',
-                    snykInstallation: 'snyk',
-                    snykTokenId: 'snyk',
-                    targetFile: 'package.json',
-                    severity: 'medium'
-                )
-            }
-        }
-
-        stage('Build') {
-            steps {
-                echo "Build concluído com sucesso!"
+                snykSecurity severity: 'critical', snykInstallation: 'snyk', snykTokenId: 'snyk'
+                script {
+                    def variable = sh (
+                        script: 'snyk container test sretriples/setups --severity-threshold=critical',
+                        returnStatus: true
+                    )
+                    echo "error code = ${variable}"
+                    if (variable != 0) {
+                        echo "Alert for vulnerability found"
+                    }
+                }
             }
         }
     }
