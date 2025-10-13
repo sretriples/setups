@@ -1,20 +1,12 @@
-# Usa imagem oficial do Node.js como base
-FROM node:18-alpine
+# Usa uma imagem oficial do Python
+FROM python:3.11-slim
 
-# Diretório de trabalho dentro do container
+# Cria um diretório de trabalho
 WORKDIR /app
 
-# Copia os arquivos package.json e package-lock.json (se existir)
-COPY package*.json ./
+# Copia o script para dentro do container
+COPY hello.py .
 
-# Instala as dependências do Node
-RUN npm install
-
-# Copia todo o restante do código da aplicação para dentro do container
-COPY . .
-
-# Expõe a porta que o app vai usar (exemplo: 3000)
-EXPOSE 3000
-
-# Comando para iniciar a aplicação
-CMD ["node", "index.js"]
+# Comando padrão ao iniciar o container
+CMD ["python", "hello.py"]
+ 
