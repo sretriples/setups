@@ -1,34 +1,23 @@
 pipeline {
     agent any
-    tools {
-        maven 'MAVEN'
-    }
+
     stages {
-        stage('Build Maven') {
+        stage('Hello World') {
             steps {
-                checkout scm
-                sh 'mvn install'
+                echo 'Hello World!'
             }
         }
-        stage('Build Docker Image') {
+
+        stage('Snyk Security Scan') {
             steps {
-                sh 'docker build -t sretriples/setups .'
-            }
-        }
-        stage('Scan') {
-            steps {
-                snykSecurity severity: 'critical', snykInstallation: 'snyk', snykTokenId: 'snyk'
-                script {
-                    def variable = sh (
-                        script: 'snyk container test sretriples/setups --severity-threshold=critical',
-                        returnStatus: true
-                    )
-                    echo "error code = ${variable}"
-                    if (variable != 0) {
-                        echo "Alert for vulnerability found"
-                    }
-                }
+                snykSecurity(
+                    snykInstallation: 'Default', // Nome da instalação configurada no Jenkins
+                    projectName: 'meu-projeto-hello-world', // Nome do projeto no Snyk
+                    monitorProjectOnBuild: true, // Envia os resultados para o dashboard do Snyk
+                    failOnIssues: true // Falha o build se houver vulnerabilidades
+                )
             }
         }
     }
 }
+ 
