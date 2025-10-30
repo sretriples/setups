@@ -81,7 +81,7 @@ install_tanzu_ubuntu() {
     run_cmd "curl -fsSL https://storage.googleapis.com/tanzu-cli-installer-packages/keys/TANZU-PACKAGING-GPG-RSA-KEY.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/tanzu-archive-keyring.gpg"
     run_cmd "echo 'deb [signed-by=/etc/apt/keyrings/tanzu-archive-keyring.gpg] https://storage.googleapis.com/tanzu-cli-installer-packages/apt tanzu-cli-jessie main' | sudo tee /etc/apt/sources.list.d/tanzu.list"
     run_cmd "sudo apt update"
-    run_cmd "sudo apt install -y tanzu-cli=1.3.0"
+    run_cmd "sudo apt install -y tanzu-cli=1.5.3"
 }
 
 install_tanzu_rhel() {
@@ -91,7 +91,7 @@ install_tanzu_rhel() {
         TANZU_RPM_URL="https://storage.googleapis.com/tanzu-cli-installer-packages/rpm/tanzu-cli/tanzu-cli-1.5.3-1.x86_64.rpm"
     fi
 
-    RPM_TMP_FILE="/tmp/tanzu-cli-1.3.0.rpm"
+    RPM_TMP_FILE="/tmp/tanzu-cli-1.5.3.rpm"
     log "⬇️ Baixando Tanzu CLI RPM..."
     run_cmd "curl -L -o $RPM_TMP_FILE $TANZU_RPM_URL"
 
@@ -129,9 +129,9 @@ run_cmd "sudo systemctl enable docker"
 log "🔌 Instalando plugins do Tanzu CLI..."
 export TANZU_CLI_CEIP_OPT_IN_PROMPT_ANSWER=no
 run_cmd "tanzu config eula accept"
-# run_cmd "tanzu plugin install --group vmware-tkg/default:v2.5.3"
-# run_cmd "tanzu plugin install cluster --target k8s"
-# run_cmd "tanzu plugin install secret --target k8s"
+run_cmd "tanzu plugin install --group vmware-tkg/default:v2.5.4"
+run_cmd "tanzu plugin install cluster --target k8s"
+run_cmd "tanzu plugin install secret --target k8s"
 
 log "⚓ Instalando Helm..."
 run_cmd "curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash"
