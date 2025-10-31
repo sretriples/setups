@@ -1,0 +1,1 @@
+https://techdocs.broadcom.com/us/en/vmware-tanzu/standalone-components/tanzu-kubernetes-grid/2-5/tkg/mgmt-upgrade-index.html
