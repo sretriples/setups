@@ -1,1 +1,22 @@
 https://techdocs.broadcom.com/us/en/vmware-tanzu/standalone-components/tanzu-kubernetes-grid/2-5/tkg/mgmt-upgrade-index.html
+
+#Verificar a Versao do TKG
+tanzu context use
+
+#Selecionar o contexto do TKGm
+
+kubectx <TKGM>
+
+
+
+# Remover variaveis
+unset VSPHERE_DATACENTER
+unset VSPHERE_DATASTORE
+unset VSPHERE_FOLDER
+unset VSPHERE_NETWORK
+unset VSPHERE_RESOURCE_POOL
+
+# Excluir o arquivo tkg-compatibility.yaml
+~/.config/tanzu/tkg/compatibility/tkg-compatibility.yaml
+
+mv ~/.config/tanzu/tkg/compatibility/tkg-compatibility.yaml /diretorio-destino(verificar no bootstrap)
