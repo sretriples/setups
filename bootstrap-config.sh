@@ -38,7 +38,7 @@ log "🔄 Atualizando pacotes do sistema..."
 run_cmd "sudo apt update"
 
 log "📦 Instalando dependências essenciais..."
-run_cmd "sudo apt install -y ca-certificates curl apt-transport-https software-properties-common python3-pip virtualenv python3-setuptools gnupg-agent lsb-release"
+run_cmd "sudo apt install -y ca-certificates curl apt-transport-https software-properties-common gnupg-agent lsb-release"
 
 log "🌐 Instalando Tanzu CLI..."
 run_cmd "sudo mkdir -p /etc/apt/keyrings"

@@ -49,7 +49,7 @@ fi
 # Funções específicas por distro
 install_dependencies_ubuntu() {
     run_cmd "sudo apt update"
-    run_cmd "sudo apt install -y ca-certificates curl apt-transport-https software-properties-common python3-pip virtualenv python3-setuptools gnupg-agent lsb-release"
+    run_cmd "sudo apt install -y ca-certificates curl apt-transport-https software-properties-common gnupg-agent lsb-release"
 }
 
 install_dependencies_rhel() {
