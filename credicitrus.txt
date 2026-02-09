@@ -1,0 +1,24 @@
+Solicito apoio Kubernetes nas configurações abaixo:
+-- Aumento de recursos do Pod
+zabbixProxy:
+resources:
+requests:
+cpu: "2"
+memory: "4Gi"
+limits:
+cpu: "4"
+memory: "6Gi"
+-- Ajustes de performance no Zabbix Proxy (a maioria das variáveis abaixo não existem na configuração padrão, portanto necessitam serem adicionadas)
+zabbixProxy:
+env:
+ZBX_STARTPOLLERS: 50
+ZBX_STARTPOLLERSUNREACHABLE: 20
+ZBX_STARTPINGERS: 10
+ZBX_STARTHTTPPOLLERS: 10
+ZBX_STARTTRAPPERS: 10
+ZBX_STARTDISCOVERERS: 5
+ZBX_STARTDBSYNCERS: 8
+ZBX_STARTHISTORYPOLLERS: 10
+ZBX_HISTORYINDEXCACHESIZE: "128M"
+ZBX_VALUECACHESIZE: "256M"
+ZBX_TIMEOUT: 10
