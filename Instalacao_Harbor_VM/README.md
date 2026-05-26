@@ -5,7 +5,7 @@
 Antes de começar, verifique se você tem os seguintes pré-requisitos:
 
 - Máquina virtual com Ubuntu 24.04 ou 26.04.
-- Segundo disco dedicado para dados, montado em `/data`.
+- Segundo disco dedicado para dados, montado em `/storage`.
 - Acesso liberado à internet.
 
 ## Etapa 1: Instalando o Docker
@@ -52,7 +52,7 @@ sudo systemctl status docker
 
 Acesse o diretório de dados e baixe a versão desejada do Harbor, conforme o repositório oficial do [GitHub](https://github.com/goharbor/harbor/releases):
 ```bash
-cd /data
+cd /storage
 sudo wget https://github.com/goharbor/harbor/releases/download/v2.14.4/harbor-online-installer-v2.14.4.tgz
 ```
 
@@ -63,14 +63,14 @@ sudo tar -xvf harbor-online-installer-v2.14.4.tgz
 
 Crie o diretório de certificados:
 ```bash
-sudo mkdir -p /data/certs
-cd /data/certs
+sudo mkdir -p /storage/certs
+cd /storage/certs
 ```
 
 Crie a cadeia de certificados da CA e copie-a para o diretório do Docker. Substitua `<harbor.dominio.com.br>` pelo hostname real do Harbor:
 ```bash
 sudo mkdir -p /etc/docker/certs.d/<harbor.dominio.com.br>/
-sudo cp /data/certs/ca.crt /etc/docker/certs.d/<harbor.dominio.com.br>/ca.crt
+sudo cp /storage/certs/ca.crt /etc/docker/certs.d/<harbor.dominio.com.br>/ca.crt
 ```
 
 Reinicie o Docker para carregar o certificado:
@@ -83,7 +83,7 @@ sudo systemctl status docker
 
 Acesse o diretório do instalador e crie uma cópia do arquivo de configuração:
 ```bash
-cd /data/harbor
+cd /storage/harbor
 sudo cp harbor.yml.tmpl harbor.yml
 ```
 
@@ -101,12 +101,12 @@ http:
 
 https:
   port: 443
-  certificate: /data/certs/fullchain.pem
-  private_key: /data/certs/privkey.pem
+  certificate: /storage/certs/fullchain.pem
+  private_key: /storage/certs/privkey.pem
 
 external_url: https://harbor.dominio.com.br
 
-data_volume: /data
+data_volume: /storage
 
 harbor_admin_password: StrongAdminPassword123!
 
@@ -138,7 +138,7 @@ Requires=docker.service
 [Service]
 Type=oneshot
 RemainAfterExit=yes
-WorkingDirectory=/data/harbor
+WorkingDirectory=/storage/harbor
 ExecStart=/usr/bin/docker compose up -d
 ExecStop=/usr/bin/docker compose down
 
@@ -166,39 +166,39 @@ sudo systemctl status harbor.service
 
 Crie um diretório de backup:
 ```bash
-sudo mkdir -p /data/harbor_v2.14.4_bkp
+sudo mkdir -p /storage/harbor_v2.14.4_bkp
 ```
 
 Faça backup das configurações e dados:
 ```bash
-cd /data/harbor
-sudo cp harbor.yml /data/harbor_v2.14.4_bkp/
-sudo cp -r common/ /data/harbor_v2.14.4_bkp/common_backup/
-sudo tar -czvf /data/harbor_v2.14.4_bkp/database_backup.tar.gz /data/database /data/secret
+cd /storage/harbor
+sudo cp harbor.yml /storage/harbor_v2.14.4_bkp/
+sudo cp -r common/ /storage/harbor_v2.14.4_bkp/common_backup/
+sudo tar -czvf /storage/harbor_v2.14.4_bkp/storagebase_backup.tar.gz /storage/storagebase /storage/secret
 ```
 
 ### Etapa 5.2: Baixando a versão mais recente
 
 Baixe a nova versão do Harbor, conforme o repositório oficial do [GitHub](https://github.com/goharbor/harbor/releases):
 ```bash
-cd /data
+cd /storage
 sudo wget https://github.com/goharbor/harbor/releases/download/v2.15.1/harbor-online-installer-v2.15.1.tgz
 ```
 
 Extraia o instalador em um diretório próprio:
 ```bash
-sudo mkdir -p /data/harbor_v2.15.1
-sudo tar -xzvf harbor-online-installer-v2.15.1.tgz -C /data/harbor_v2.15.1/
+sudo mkdir -p /storage/harbor_v2.15.1
+sudo tar -xzvf harbor-online-installer-v2.15.1.tgz -C /storage/harbor_v2.15.1/
 ```
 
 ### Etapa 5.3: Ajustando as configurações
 
 Copie os arquivos de instalação e configuração para o diretório antigo do Harbor:
 ```bash
-cd /data/harbor
-sudo cp /data/harbor_v2.15.1/harbor/install.sh .
-sudo cp /data/harbor_v2.15.1/harbor/prepare .
-sudo cp /data/harbor_v2.15.1/harbor/common.sh .
+cd /storage/harbor
+sudo cp /storage/harbor_v2.15.1/harbor/install.sh .
+sudo cp /storage/harbor_v2.15.1/harbor/prepare .
+sudo cp /storage/harbor_v2.15.1/harbor/common.sh .
 ```
 
 ### Etapa 5.4: Executando o upgrade
